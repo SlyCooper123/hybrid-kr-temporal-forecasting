@@ -1,0 +1,17 @@
+folium
+imodels
+matplotlib
+networkx
+numpy
+pandas
+pmdarima
+pygam
+requests
+rulefit
+scikit-learn
+scipy
+seaborn
+shap
+shapely
+statsmodels
+tqdm
