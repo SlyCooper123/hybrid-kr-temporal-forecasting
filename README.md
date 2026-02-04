@@ -41,7 +41,7 @@ The main goal is to achieve competitive forecasting performance while producing 
 │
 └── outputs/
     ├── datasets/
-    ├── metrics/
+    ├── latex/
     ├── rules/
     └── figures/
 ```
