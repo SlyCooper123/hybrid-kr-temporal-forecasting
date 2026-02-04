@@ -154,7 +154,62 @@ Main outputs:
 
 ---
 
-## 5. Notes for reviewers (blind submission)
+## 5. Reproducibility recipes (copy/paste commands)
+
+The CLI interfaces expose many options (lags, seasonal periods, ARIMA orders, Fourier terms, evaluation modes).  
+To make reproduction easier, below are **ready-to-run command examples** matching the typical configurations used in the experiments.
+
+> **Tip:** All commands below assume you already generated `data/processed/` datasets using the notebook pipeline.
+
+### A) Rule extraction (RuleFit) — Coimbra, MI feature set
+
+```bash
+python src/extract_rules_with_coeffs.py   --csv data/processed/dataset_COIMBRA.csv   --target consumo_gwh   --features sunshine_h day_length_h rad_solar tmean_c   --out outputs/knowledge/rulefit_rules_COIMBRA.csv   --max-samples 10000   --min-support 0.02   --max-len 3   --n-est 140   --max-depth 4   --min-leaf 50
+```
+
+Main output:
+- `outputs/knowledge/rulefit_rules_COIMBRA.csv` with columns: `rule, coef, support, len, score`
+
+---
+
+### B) Portugal seasonal heatmap (year = 2024)
+
+```bash
+python src/plot_portugal_seasonal_heatmap_v2.py   --csv data/processed/dataset_meteo_zonal.csv   --year 2024   --out outputs/figures/heatmap_portugal_seasons_2024.png
+```
+
+Main output:
+- `outputs/figures/heatmap_portugal_seasons_2024.png`
+
+---
+
+### C) Zone forecasting (fair compare) — Coimbra, ARIMAX grid + Fourier + log-target
+
+```bash
+python src/zone_timeseries_compare.py   --csv data/processed/dataset_meteo_com_consumo.csv   --zone COIMBRA   --out-dir outputs/exp_zone   --date-col date   --target consumo_gwh   --exog-cols "sunshine_h,day_length_h,rad_solar,tmean_c"   --lags "1,7,14"   --seasonal-periods "7,30"   --p "1 2" --d "1" --q "0 1"   --P "0 1" --D "0 1" --Q "0 1"   --limit-combos 8   --add-fourier --fourier-k 2   --log-target
+```
+
+Main outputs (examples):
+- `outputs/exp_zone/comparison_arimax_vs_baselines.csv`
+- `outputs/exp_zone/compare_arimax_vs_baselines_test.png`
+- `outputs/exp_zone/sarimax_grid_summary.csv`
+
+---
+
+### How to interpret the main CLI flags
+
+- `--exog-cols`: comma-separated list of exogenous drivers (meteorology + calendar features).
+- `--lags`: lag window used to create supervised predictors (e.g., `1,7,14` days).
+- `--seasonal-periods`: seasonal cycles (e.g., `7` = weekly, `30` ≈ monthly).
+- `--p --d --q` and `--P --D --Q`: candidate ARIMA/SARIMA orders searched in the grid.
+- `--add-fourier --fourier-k`: adds Fourier terms to model smooth long-term periodicity.
+- `--log-target`: applies log-transform to stabilize variance (optional).
+- `--limit-combos`: caps the grid size to keep runtime bounded.
+
+
+---
+
+## 6. Notes for reviewers (blind submission)
 
 - This repository is anonymized for double-blind review.
 - Use relative paths only (no personal directories / OneDrive paths).
@@ -163,6 +218,6 @@ Main outputs:
 
 ---
 
-## 6. Citation
+## 7. Citation
 
 If you use this codebase, please cite the corresponding paper submission.
