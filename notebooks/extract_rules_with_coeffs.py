@@ -106,8 +106,8 @@ def build_activation_matrix_sparse(
     rules: pd.Series, X: pd.DataFrame, log_interval: int = 25
 ):
     """
-    Retorna matriz CSC esparsa (n_samples x n_rules) com 0/1 indicando ativação da regra.
-    Usa layout por coluna (CSC) para construir de forma eficiente.
+    Returns sparse CSC matrix (n_samples x n_rules) with 0/1 indicating rule activation.
+    Uses column-wise layout (CSC) for efficient construction.
     """
     from scipy.sparse import csc_matrix
 
